@@ -1,0 +1,77 @@
+buildscript {
+    ext.kotlin_version = '1.2.10'
+
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'kotlin'
+
+sourceCompatibility = 1.8
+
+import org.gradle.internal.os.OperatingSystem
+
+switch ( OperatingSystem.current() ) {
+    case OperatingSystem.WINDOWS:
+        project.ext.lwjglNatives = "natives-windows"
+        break
+    case OperatingSystem.LINUX:
+        project.ext.lwjglNatives = "natives-linux"
+        break
+    case OperatingSystem.MAC_OS:
+        project.ext.lwjglNatives = "natives-macos"
+        break
+}
+
+project.ext.lwjglVersion = "3.1.5"
+project.ext.jomlVersion = "1.9.6"
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    // lwjgl
+    compile "org.lwjgl:lwjgl:$lwjglVersion"
+    compile "org.lwjgl:lwjgl-assimp:$lwjglVersion"
+    compile "org.lwjgl:lwjgl-glfw:$lwjglVersion"
+    compile "org.lwjgl:lwjgl-openal:$lwjglVersion"
+    compile "org.lwjgl:lwjgl-opengl:$lwjglVersion"
+    compile "org.lwjgl:lwjgl-stb:$lwjglVersion"
+    compile "org.lwjgl:lwjgl:$lwjglVersion:$lwjglNatives"
+    compile "org.lwjgl:lwjgl-assimp:$lwjglVersion:$lwjglNatives"
+    compile "org.lwjgl:lwjgl-glfw:$lwjglVersion:$lwjglNatives"
+    compile "org.lwjgl:lwjgl-openal:$lwjglVersion:$lwjglNatives"
+    compile "org.lwjgl:lwjgl-opengl:$lwjglVersion:$lwjglNatives"
+    compile "org.lwjgl:lwjgl-stb:$lwjglVersion:$lwjglNatives"
+
+    // joml
+    compile "org.joml:joml:${jomlVersion}"
+
+    // rxjava
+    compile "io.reactivex.rxjava2:rxjava:2.1.7"
+    compile "io.reactivex.rxjava2:rxkotlin:2.0.0"
+
+    // io
+    compile 'com.squareup.moshi:moshi:1.5.0'
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
